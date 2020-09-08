@@ -9,6 +9,8 @@ asdf plugin-add nodejs
 
 asdf plugin-add just https://github.com/ggilmore/asdf-just.git
 
+asdf plugin-add ds-to-dhall https://github.com/sourcegraph/asdf-ds-to-dhall.git
+
 OTHER_PACKAGES=(
   "dhall"
   "shellcheck"
