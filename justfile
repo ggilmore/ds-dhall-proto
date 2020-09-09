@@ -1,4 +1,4 @@
-all: build format lint
+all: check build format lint
 
 build: render-ci-pipeline
 
@@ -9,8 +9,13 @@ format: format-dhall prettier format-shfmt
 
 lint: lint-dhall shellcheck
 
+check: check-dhall
+
 prettier:
     yarn run prettier
+
+check-dhall:
+    ./scripts/dhall-check.sh
 
 format-dhall:
     ./scripts/dhall-format.sh
