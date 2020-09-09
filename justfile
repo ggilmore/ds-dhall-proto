@@ -21,6 +21,9 @@ lint-dhall:
 shellcheck:
     ./scripts/shellcheck.sh
 
+sync-upstream:
+    ./scripts/sync-deploy-sourcegraph.sh
+
 format-shfmt:
     shfmt -w .
 

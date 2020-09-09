@@ -5,4 +5,4 @@ fd 7.4.0
 nodejs 14.7.0
 yarn 1.22.5
 just 0.7.2
-ds-to-dhall 0.5.0
+ds-to-dhall 0.8.0
