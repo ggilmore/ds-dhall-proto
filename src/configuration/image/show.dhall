@@ -40,4 +40,13 @@ let test3 =
       :   show (testImage with digest = Some "123tsf")
         ≡ "index.docker.io/sourcegraph/frontend:insiders@sha256:123tsf"
 
+let test4 =
+        assert
+      :   show
+            ( testImage
+              with registry = Some "index.sourcegraph.net"
+              with digest = Some "123tsf"
+            )
+        ≡ "index.sourcegraph.net/sourcegraph/frontend:insiders@sha256:123tsf"
+
 in  show
