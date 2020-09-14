@@ -3090,11 +3090,13 @@
         }
     }
 , default =
-  { Base.Service.backend =
+  { Base.Service.backend
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
-      { annotations.description =
+      { annotations.description
+        =
           "Dummy service that prevents backend pods from being scheduled on the same node if possible."
       , labels =
         { deploy = "sourcegraph"
@@ -3111,7 +3113,8 @@
       }
     }
   , Cadvisor =
-    { ClusterRole.cadvisor =
+    { ClusterRole.cadvisor
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "ClusterRole"
       , metadata =
@@ -3132,7 +3135,8 @@
           }
         ]
       }
-    , ClusterRoleBinding.cadvisor =
+    , ClusterRoleBinding.cadvisor
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "ClusterRoleBinding"
       , metadata =
@@ -3150,10 +3154,12 @@
         , kind = "ClusterRole"
         , name = "cadvisor"
         }
-      , subjects.cadvisor =
+      , subjects.cadvisor
+        =
         { kind = "ServiceAccount", name = "cadvisor", namespace = "default" }
       }
-    , DaemonSet.cadvisor =
+    , DaemonSet.cadvisor
+      =
       { apiVersion = "apps/v1"
       , kind = "DaemonSet"
       , metadata =
@@ -3181,7 +3187,8 @@
             }
           , spec =
             { automountServiceAccountToken = False
-            , containers.cadvisor =
+            , containers.cadvisor
+              =
               { args =
                 [ "--store_container_labels=false"
                 , "--whitelisted_container_labels=io.kubernetes.container.name,io.kubernetes.pod.name,io.kubernetes.pod.namespace,io.kubernetes.pod.uid"
@@ -3202,7 +3209,8 @@
                     , version = "3.19.2"
                     }
               , name = "cadvisor"
-              , ports.http =
+              , ports.http
+                =
                 { containerPort = 48080, name = "http", protocol = "TCP" }
               , resources =
                 { limits =
@@ -3244,7 +3252,8 @@
           }
         }
       }
-    , PodSecurityPolicy.cadvisor =
+    , PodSecurityPolicy.cadvisor
+      =
       { apiVersion = "policy/v1beta1"
       , kind = "PodSecurityPolicy"
       , metadata =
@@ -3271,7 +3280,8 @@
         , volumes = [ "*" ]
         }
       }
-    , ServiceAccount.cadvisor =
+    , ServiceAccount.cadvisor
+      =
       { apiVersion = "v1"
       , kind = "ServiceAccount"
       , metadata =
@@ -3287,12 +3297,13 @@
       }
     }
   , Frontend =
-    { Deployment.sourcegraph-frontend =
+    { Deployment.sourcegraph-frontend
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Serves the frontend of Sourcegraph via HTTP(S)."
+        { annotations.description
+          = "Serves the frontend of Sourcegraph via HTTP(S)."
         , labels =
           { `app.kubernetes.io/component` = "frontend"
           , deploy = "sourcegraph"
@@ -3310,7 +3321,8 @@
           , type = "RollingUpdate"
           }
         , template =
-          { metadata.labels =
+          { metadata.labels
+            =
             { app = "sourcegraph-frontend", deploy = "sourcegraph" }
           , spec =
             { containers =
@@ -3395,7 +3407,8 @@
                     }
                   }
                 , terminationMessagePolicy = "FallbackToLogsOnError"
-                , volumeMounts.cache-ssd =
+                , volumeMounts.cache-ssd
+                  =
                   { mountPath = "/mnt/cache", name = "cache-ssd" }
                 }
               , jaeger-agent =
@@ -3403,9 +3416,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -3451,7 +3466,8 @@
           }
         }
       }
-    , Ingress.sourcegraph-frontend =
+    , Ingress.sourcegraph-frontend
+      =
       { apiVersion = "networking.k8s.io/v1beta1"
       , kind = "Ingress"
       , metadata =
@@ -3467,8 +3483,10 @@
           }
         , name = "sourcegraph-frontend"
         }
-      , spec.rules =
-        [ { http.paths =
+      , spec.rules
+        =
+        [ { http.paths
+            =
             [ { backend =
                 { serviceName = "sourcegraph-frontend", servicePort = 30080 }
               , path = "/"
@@ -3477,7 +3495,8 @@
           }
         ]
       }
-    , Role.sourcegraph-frontend =
+    , Role.sourcegraph-frontend
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "Role"
       , metadata =
@@ -3496,7 +3515,8 @@
           }
         ]
       }
-    , RoleBinding.sourcegraph-frontend =
+    , RoleBinding.sourcegraph-frontend
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "RoleBinding"
       , metadata =
@@ -3510,7 +3530,8 @@
         }
       , roleRef =
         { apiGroup = "", kind = "Role", name = "sourcegraph-frontend" }
-      , subjects.sourcegraph-frontend =
+      , subjects.sourcegraph-frontend
+        =
         { kind = "ServiceAccount", name = "sourcegraph-frontend" }
       }
     , Service =
@@ -3549,14 +3570,16 @@
           , name = "sourcegraph-frontend-internal"
           }
         , spec =
-          { ports.http-internal =
+          { ports.http-internal
+            =
             { name = "http-internal", port = 80, targetPort = "http-internal" }
           , selector.app = "sourcegraph-frontend"
           , type = "ClusterIP"
           }
         }
       }
-    , ServiceAccount.sourcegraph-frontend =
+    , ServiceAccount.sourcegraph-frontend
+      =
       { apiVersion = "v1"
       , imagePullSecrets.docker-registry.name = "docker-registry"
       , kind = "ServiceAccount"
@@ -3572,7 +3595,8 @@
       }
     }
   , Github-Proxy =
-    { Deployment.github-proxy =
+    { Deployment.github-proxy
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
@@ -3635,9 +3659,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -3681,7 +3707,8 @@
           }
         }
       }
-    , Service.github-proxy =
+    , Service.github-proxy
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -3705,7 +3732,8 @@
       }
     }
   , Gitserver =
-    { Service.gitserver =
+    { Service.gitserver
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -3731,12 +3759,13 @@
         , type = "ClusterIP"
         }
       }
-    , StatefulSet.gitserver =
+    , StatefulSet.gitserver
+      =
       { apiVersion = "apps/v1"
       , kind = "StatefulSet"
       , metadata =
-        { annotations.description =
-            "Stores clones of repositories to perform Git operations."
+        { annotations.description
+          = "Stores clones of repositories to perform Git operations."
         , labels =
           { `app.kubernetes.io/component` = "gitserver"
           , deploy = "sourcegraph"
@@ -3750,7 +3779,8 @@
         , selector.matchLabels.app = "gitserver"
         , serviceName = "gitserver"
         , template =
-          { metadata.labels =
+          { metadata.labels
+            =
             { app = "gitserver"
             , deploy = "sourcegraph"
             , group = "backend"
@@ -3796,7 +3826,8 @@
                     }
                   }
                 , terminationMessagePolicy = "FallbackToLogsOnError"
-                , volumeMounts.repos =
+                , volumeMounts.repos
+                  =
                   { mountPath = "/data/repos", name = "repos" }
                 }
               , jaeger-agent =
@@ -3804,9 +3835,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -3856,7 +3889,8 @@
             , metadata.name = "repos"
             , spec =
               { accessModes = [ "ReadWriteOnce" ]
-              , resources.requests =
+              , resources.requests
+                =
                 { cpu = None Text
                 , ephemeralStorage = None Text
                 , memory = None Text
@@ -3869,9 +3903,11 @@
       }
     }
   , Grafana =
-    { ConfigMap.grafana =
+    { ConfigMap.grafana
+      =
       { apiVersion = "v1"
-      , data.`datasources.yml` =
+      , data.`datasources.yml`
+        =
           ''
           apiVersion: 1
 
@@ -3897,7 +3933,8 @@
         , name = "grafana"
         }
       }
-    , Service.grafana =
+    , Service.grafana
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -3915,7 +3952,8 @@
         , type = "ClusterIP"
         }
       }
-    , ServiceAccount.grafana =
+    , ServiceAccount.grafana
+      =
       { apiVersion = "v1"
       , imagePullSecrets.docker-registry.name = "docker-registry"
       , kind = "ServiceAccount"
@@ -3929,7 +3967,8 @@
         , name = "grafana"
         }
       }
-    , StatefulSet.grafana =
+    , StatefulSet.grafana
+      =
       { apiVersion = "apps/v1"
       , kind = "StatefulSet"
       , metadata =
@@ -3949,7 +3988,8 @@
         , template =
           { metadata.labels = { app = "grafana", deploy = "sourcegraph" }
           , spec =
-            { containers.grafana =
+            { containers.grafana
+              =
               { image =
                   < asRecord :
                       { name : Text
@@ -3991,7 +4031,8 @@
               }
             , securityContext.runAsUser = 0
             , serviceAccountName = "grafana"
-            , volumes.config =
+            , volumes.config
+              =
               { configMap = { defaultMode = 511, name = "grafana" }
               , name = "config"
               }
@@ -4004,7 +4045,8 @@
             , metadata.name = "grafana-data"
             , spec =
               { accessModes = [ "ReadWriteOnce" ]
-              , resources.requests =
+              , resources.requests
+                =
                 { cpu = None Text
                 , ephemeralStorage = None Text
                 , memory = None Text
@@ -4069,12 +4111,13 @@
           }
         }
       }
-    , StatefulSet.indexed-search =
+    , StatefulSet.indexed-search
+      =
       { apiVersion = "apps/v1"
       , kind = "StatefulSet"
       , metadata =
-        { annotations.description =
-            "Backend for indexed text search operations."
+        { annotations.description
+          = "Backend for indexed text search operations."
         , labels =
           { `app.kubernetes.io/component` = "indexed-search"
           , deploy = "sourcegraph"
@@ -4109,7 +4152,8 @@
                       , version = "3.19.2"
                       }
                 , name = "zoekt-indexserver"
-                , ports.index-http =
+                , ports.index-http
+                  =
                   { containerPort = 6072, name = "index-http" }
                 , resources =
                   { limits =
@@ -4179,7 +4223,8 @@
             , metadata = { labels.deploy = "sourcegraph", name = "data" }
             , spec =
               { accessModes = [ "ReadWriteOnce" ]
-              , resources.requests =
+              , resources.requests
+                =
                 { cpu = None Text
                 , ephemeralStorage = None Text
                 , memory = None Text
@@ -4192,7 +4237,8 @@
       }
     }
   , Jaeger =
-    { Deployment.jaeger =
+    { Deployment.jaeger
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
@@ -4207,7 +4253,8 @@
         }
       , spec =
         { replicas = 1
-        , selector.matchLabels =
+        , selector.matchLabels
+          =
           { app = "jaeger"
           , `app.kubernetes.io/component` = "all-in-one"
           , `app.kubernetes.io/name` = "jaeger"
@@ -4227,7 +4274,8 @@
               }
             }
           , spec =
-            { containers.jaeger =
+            { containers.jaeger
+              =
               { args = [ "--memory.max-traces=20000" ]
               , image =
                   < asRecord :
@@ -4331,7 +4379,8 @@
           , name = "jaeger-query"
           }
         , spec =
-          { ports.query-http =
+          { ports.query-http
+            =
             { name = "query-http"
             , port = 16686
             , protocol = "TCP"
@@ -4347,9 +4396,11 @@
       }
     }
   , Pgsql =
-    { ConfigMap.pgsql-conf =
+    { ConfigMap.pgsql-conf
+      =
       { apiVersion = "v1"
-      , data.`postgresql.conf` =
+      , data.`postgresql.conf`
+        =
           ''
           # -----------------------------
           # PostgreSQL configuration file
@@ -5053,7 +5104,8 @@
         , name = "pgsql-conf"
         }
       }
-    , Deployment.pgsql =
+    , Deployment.pgsql
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
@@ -5072,7 +5124,8 @@
         , selector.matchLabels.app = "pgsql"
         , strategy.type = "Recreate"
         , template =
-          { metadata.labels =
+          { metadata.labels
+            =
             { app = "pgsql", deploy = "sourcegraph", group = "backend" }
           , spec =
             { containers =
@@ -5119,7 +5172,8 @@
                   }
                 }
               , pgsql-exporter =
-                { env.DATA_SOURCE_NAME =
+                { env.DATA_SOURCE_NAME
+                  =
                   { name = "DATA_SOURCE_NAME"
                   , value = "postgres://sg:@localhost:5432/?sslmode=disable"
                   }
@@ -5154,7 +5208,8 @@
                 , terminationMessagePolicy = "FallbackToLogsOnError"
                 }
               }
-            , initContainers.correct-data-dir-permissions =
+            , initContainers.correct-data-dir-permissions
+              =
               { command =
                 [ "sh"
                 , "-c"
@@ -5192,7 +5247,8 @@
           }
         }
       }
-    , PersistentVolumeClaim.pgsql =
+    , PersistentVolumeClaim.pgsql
+      =
       { apiVersion = "v1"
       , kind = "PersistentVolumeClaim"
       , metadata =
@@ -5205,12 +5261,14 @@
         }
       , spec =
         { accessModes = [ "ReadWriteOnce" ]
-        , resources.requests =
+        , resources.requests
+          =
           { cpu = None Text, ephemeralStorage = None Text, memory = None Text }
         , storageClassName = "sourcegraph"
         }
       }
-    , Service.pgsql =
+    , Service.pgsql
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -5239,8 +5297,8 @@
         { apiVersion = "apps/v1"
         , kind = "Deployment"
         , metadata =
-          { annotations.description =
-              "Stores and manages precise code intelligence bundles."
+          { annotations.description
+            = "Stores and manages precise code intelligence bundles."
           , labels =
             { `app.kubernetes.io/component` = "precise-code-intel"
             , deploy = "sourcegraph"
@@ -5255,12 +5313,14 @@
           , selector.matchLabels.app = "precise-code-intel-bundle-manager"
           , strategy.type = "Recreate"
           , template =
-            { metadata.labels =
+            { metadata.labels
+              =
               { app = "precise-code-intel-bundle-manager"
               , deploy = "sourcegraph"
               }
             , spec =
-              { containers.precise-code-intel-bundle-manager =
+              { containers.precise-code-intel-bundle-manager
+                =
                 { env =
                   { POD_NAME =
                     { name = "POD_NAME"
@@ -5316,11 +5376,13 @@
                     }
                   }
                 , terminationMessagePolicy = "FallbackToLogsOnError"
-                , volumeMounts.bundle-manager =
+                , volumeMounts.bundle-manager
+                  =
                   { mountPath = "/lsif-storage", name = "bundle-manager" }
                 }
               , securityContext.runAsUser = 0
-              , volumes.bundle-manager =
+              , volumes.bundle-manager
+                =
                 { name = "bundle-manager"
                 , persistentVolumeClaim.claimName = "bundle-manager"
                 }
@@ -5332,7 +5394,8 @@
         { apiVersion = "apps/v1"
         , kind = "Deployment"
         , metadata =
-          { annotations.description =
+          { annotations.description
+            =
               "Handles conversion of uploaded precise code intelligence bundles."
           , labels =
             { `app.kubernetes.io/component` = "precise-code-intel"
@@ -5351,10 +5414,12 @@
             , type = "RollingUpdate"
             }
           , template =
-            { metadata.labels =
+            { metadata.labels
+              =
               { app = "precise-code-intel-worker", deploy = "sourcegraph" }
             , spec =
-              { containers.precise-code-intel-worker =
+              { containers.precise-code-intel-worker
+                =
                 { env =
                   { NUM_WORKERS = { name = "NUM_WORKERS", value = "4" }
                   , POD_NAME =
@@ -5418,7 +5483,8 @@
           }
         }
       }
-    , PersistentVolumeClaim.bundle-manager =
+    , PersistentVolumeClaim.bundle-manager
+      =
       { apiVersion = "v1"
       , kind = "PersistentVolumeClaim"
       , metadata =
@@ -5431,7 +5497,8 @@
         }
       , spec =
         { accessModes = [ "ReadWriteOnce" ]
-        , resources.requests =
+        , resources.requests
+          =
           { cpu = None Text, ephemeralStorage = None Text, memory = None Text }
         , storageClassName = "sourcegraph"
         }
@@ -5490,7 +5557,8 @@
       }
     }
   , Prometheus =
-    { ClusterRole.prometheus =
+    { ClusterRole.prometheus
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "ClusterRole"
       , metadata =
@@ -5528,7 +5596,8 @@
           }
         ]
       }
-    , ClusterRoleBinding.prometheus =
+    , ClusterRoleBinding.prometheus
+      =
       { apiVersion = "rbac.authorization.k8s.io/v1"
       , kind = "ClusterRoleBinding"
       , metadata =
@@ -5541,10 +5610,12 @@
         , name = "prometheus"
         }
       , roleRef = { apiGroup = "", kind = "ClusterRole", name = "prometheus" }
-      , subjects.prometheus =
+      , subjects.prometheus
+        =
         { kind = "ServiceAccount", name = "prometheus", namespace = "default" }
       }
-    , ConfigMap.prometheus =
+    , ConfigMap.prometheus
+      =
       { apiVersion = "v1"
       , data =
         { `extra_rules.yml` = ""
@@ -5810,12 +5881,13 @@
         , name = "prometheus"
         }
       }
-    , Deployment.prometheus =
+    , Deployment.prometheus
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Collects metrics and aggregates them into graphs."
+        { annotations.description
+          = "Collects metrics and aggregates them into graphs."
         , labels =
           { `app.kubernetes.io/component` = "prometheus"
           , deploy = "sourcegraph"
@@ -5832,7 +5904,8 @@
         , template =
           { metadata.labels = { app = "prometheus", deploy = "sourcegraph" }
           , spec =
-            { containers.prometheus =
+            { containers.prometheus
+              =
               { image =
                   < asRecord :
                       { name : Text
@@ -5895,7 +5968,8 @@
           }
         }
       }
-    , PersistentVolumeClaim.prometheus =
+    , PersistentVolumeClaim.prometheus
+      =
       { apiVersion = "v1"
       , kind = "PersistentVolumeClaim"
       , metadata =
@@ -5908,12 +5982,14 @@
         }
       , spec =
         { accessModes = [ "ReadWriteOnce" ]
-        , resources.requests =
+        , resources.requests
+          =
           { cpu = None Text, ephemeralStorage = None Text, memory = None Text }
         , storageClassName = "sourcegraph"
         }
       }
-    , Service.prometheus =
+    , Service.prometheus
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -5931,7 +6007,8 @@
         , type = "ClusterIP"
         }
       }
-    , ServiceAccount.prometheus =
+    , ServiceAccount.prometheus
+      =
       { apiVersion = "v1"
       , imagePullSecrets.docker-registry.name = "docker-registry"
       , kind = "ServiceAccount"
@@ -5947,12 +6024,13 @@
       }
     }
   , Query-Runner =
-    { Deployment.query-runner =
+    { Deployment.query-runner
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Saved search query runner / notification service."
+        { annotations.description
+          = "Saved search query runner / notification service."
         , labels =
           { `app.kubernetes.io/component` = "query-runner"
           , deploy = "sourcegraph"
@@ -5978,9 +6056,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -6057,7 +6137,8 @@
           }
         }
       }
-    , Service.query-runner =
+    , Service.query-runner
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -6140,7 +6221,8 @@
                       }
                     }
                   , terminationMessagePolicy = "FallbackToLogsOnError"
-                  , volumeMounts.redis-data =
+                  , volumeMounts.redis-data
+                    =
                     { mountPath = "/redis-data", name = "redis-data" }
                   }
                 , redis-exporter =
@@ -6177,7 +6259,8 @@
                   }
                 }
               , securityContext.runAsUser = 0
-              , volumes.redis-data =
+              , volumes.redis-data
+                =
                 { name = "redis-data"
                 , persistentVolumeClaim.claimName = "redis-cache"
                 }
@@ -6189,8 +6272,8 @@
         { apiVersion = "apps/v1"
         , kind = "Deployment"
         , metadata =
-          { annotations.description =
-              "Redis for storing semi-persistent data like user sessions."
+          { annotations.description
+            = "Redis for storing semi-persistent data like user sessions."
           , labels =
             { `app.kubernetes.io/component` = "redis"
             , deploy = "sourcegraph"
@@ -6276,12 +6359,14 @@
                       }
                     }
                   , terminationMessagePolicy = "FallbackToLogsOnError"
-                  , volumeMounts.redis-data =
+                  , volumeMounts.redis-data
+                    =
                     { mountPath = "/redis-data", name = "redis-data" }
                   }
                 }
               , securityContext.runAsUser = 0
-              , volumes.redis-data =
+              , volumes.redis-data
+                =
                 { name = "redis-data"
                 , persistentVolumeClaim.claimName = "redis-store"
                 }
@@ -6304,7 +6389,8 @@
           }
         , spec =
           { accessModes = [ "ReadWriteOnce" ]
-          , resources.requests =
+          , resources.requests
+            =
             { cpu = None Text
             , ephemeralStorage = None Text
             , memory = None Text
@@ -6325,7 +6411,8 @@
           }
         , spec =
           { accessModes = [ "ReadWriteOnce" ]
-          , resources.requests =
+          , resources.requests
+            =
             { cpu = None Text
             , ephemeralStorage = None Text
             , memory = None Text
@@ -6382,11 +6469,13 @@
       }
     }
   , Repo-Updater =
-    { Deployment.repo-updater =
+    { Deployment.repo-updater
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
+        { annotations.description
+          =
             "Handles repository metadata (not Git data) lookups and updates from external code hosts and other similar services."
         , labels =
           { `app.kubernetes.io/component` = "repo-updater"
@@ -6413,9 +6502,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -6502,7 +6593,8 @@
           }
         }
       }
-    , Service.repo-updater =
+    , Service.repo-updater
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -6526,7 +6618,8 @@
       }
     }
   , Searcher =
-    { Deployment.searcher =
+    { Deployment.searcher
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
@@ -6556,9 +6649,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -6647,7 +6742,8 @@
                     }
                   }
                 , terminationMessagePolicy = "FallbackToLogsOnError"
-                , volumeMounts.cache-ssd =
+                , volumeMounts.cache-ssd
+                  =
                   { mountPath = "/mnt/cache", name = "cache-ssd" }
                 }
               }
@@ -6657,7 +6753,8 @@
           }
         }
       }
-    , Service.searcher =
+    , Service.searcher
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -6684,7 +6781,8 @@
       }
     }
   , Symbols =
-    { Deployment.symbols =
+    { Deployment.symbols
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
@@ -6714,9 +6812,11 @@
                   [ "--reporter.grpc.host-port=jaeger-collector:14250"
                   , "--reporter.type=grpc"
                   ]
-                , env.POD_NAME =
+                , env.POD_NAME
+                  =
                   { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 , image =
@@ -6810,7 +6910,8 @@
                     }
                   }
                 , terminationMessagePolicy = "FallbackToLogsOnError"
-                , volumeMounts.cache-ssd =
+                , volumeMounts.cache-ssd
+                  =
                   { mountPath = "/mnt/cache", name = "cache-ssd" }
                 }
               }
@@ -6820,7 +6921,8 @@
           }
         }
       }
-    , Service.symbols =
+    , Service.symbols
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =
@@ -6847,12 +6949,13 @@
       }
     }
   , Syntect-Server =
-    { Deployment.syntect-server =
+    { Deployment.syntect-server
+      =
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Backend for syntax highlighting operations."
+        { annotations.description
+          = "Backend for syntax highlighting operations."
         , labels =
           { `app.kubernetes.io/component` = "syntect-server"
           , deploy = "sourcegraph"
@@ -6872,7 +6975,8 @@
         , template =
           { metadata.labels = { app = "syntect-server", deploy = "sourcegraph" }
           , spec =
-            { containers.syntect-server =
+            { containers.syntect-server
+              =
               { env = None <>
               , image =
                   < asRecord :
@@ -6916,7 +7020,8 @@
           }
         }
       }
-    , Service.syntect-server =
+    , Service.syntect-server
+      =
       { apiVersion = "v1"
       , kind = "Service"
       , metadata =

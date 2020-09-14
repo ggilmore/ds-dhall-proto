@@ -1,8 +1,10 @@
-{ Base.Service.backend =
+{ Base.Service.backend
+  =
   { apiVersion = "v1"
   , kind = "Service"
   , metadata =
-    { annotations.description =
+    { annotations.description
+      =
         "Dummy service that prevents backend pods from being scheduled on the same node if possible."
     , labels =
       { deploy = "sourcegraph"
@@ -19,7 +21,8 @@
     }
   }
 , Cadvisor =
-  { ClusterRole.cadvisor =
+  { ClusterRole.cadvisor
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "ClusterRole"
     , metadata =
@@ -40,7 +43,8 @@
         }
       ]
     }
-  , ClusterRoleBinding.cadvisor =
+  , ClusterRoleBinding.cadvisor
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "ClusterRoleBinding"
     , metadata =
@@ -61,7 +65,8 @@
     , subjects =
       [ { kind = "ServiceAccount", name = "cadvisor", namespace = "default" } ]
     }
-  , DaemonSet.cadvisor =
+  , DaemonSet.cadvisor
+    =
     { apiVersion = "apps/v1"
     , kind = "DaemonSet"
     , metadata =
@@ -128,7 +133,8 @@
         }
       }
     }
-  , PodSecurityPolicy.cadvisor =
+  , PodSecurityPolicy.cadvisor
+    =
     { apiVersion = "policy/v1beta1"
     , kind = "PodSecurityPolicy"
     , metadata =
@@ -155,7 +161,8 @@
       , volumes = [ "*" ]
       }
     }
-  , ServiceAccount.cadvisor =
+  , ServiceAccount.cadvisor
+    =
     { apiVersion = "v1"
     , kind = "ServiceAccount"
     , metadata =
@@ -171,12 +178,13 @@
     }
   }
 , Frontend =
-  { Deployment.sourcegraph-frontend =
+  { Deployment.sourcegraph-frontend
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
-      { annotations.description =
-          "Serves the frontend of Sourcegraph via HTTP(S)."
+      { annotations.description
+        = "Serves the frontend of Sourcegraph via HTTP(S)."
       , labels =
         { `app.kubernetes.io/component` = "frontend"
         , deploy = "sourcegraph"
@@ -194,7 +202,8 @@
         , type = "RollingUpdate"
         }
       , template =
-        { metadata.labels =
+        { metadata.labels
+          =
           { app = "sourcegraph-frontend", deploy = "sourcegraph" }
         , spec =
           { containers =
@@ -390,7 +399,8 @@
         }
       }
     }
-  , Ingress.sourcegraph-frontend =
+  , Ingress.sourcegraph-frontend
+    =
     { apiVersion = "networking.k8s.io/v1beta1"
     , kind = "Ingress"
     , metadata =
@@ -406,8 +416,10 @@
         }
       , name = "sourcegraph-frontend"
       }
-    , spec.rules =
-      [ { http.paths =
+    , spec.rules
+      =
+      [ { http.paths
+          =
           [ { backend =
               { serviceName = "sourcegraph-frontend", servicePort = 30080 }
             , path = "/"
@@ -416,7 +428,8 @@
         }
       ]
     }
-  , Role.sourcegraph-frontend =
+  , Role.sourcegraph-frontend
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "Role"
     , metadata =
@@ -435,7 +448,8 @@
         }
       ]
     }
-  , RoleBinding.sourcegraph-frontend =
+  , RoleBinding.sourcegraph-frontend
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "RoleBinding"
     , metadata =
@@ -494,7 +508,8 @@
         }
       }
     }
-  , ServiceAccount.sourcegraph-frontend =
+  , ServiceAccount.sourcegraph-frontend
+    =
     { apiVersion = "v1"
     , imagePullSecrets = [ { name = "docker-registry" } ]
     , kind = "ServiceAccount"
@@ -510,7 +525,8 @@
     }
   }
 , Github-Proxy =
-  { Deployment.github-proxy =
+  { Deployment.github-proxy
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -566,7 +582,8 @@
                 ]
               , env = Some
                 [ { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 ]
@@ -603,7 +620,8 @@
         }
       }
     }
-  , Service.github-proxy =
+  , Service.github-proxy
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -627,7 +645,8 @@
     }
   }
 , Gitserver =
-  { Service.gitserver =
+  { Service.gitserver
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -653,12 +672,13 @@
       , type = "ClusterIP"
       }
     }
-  , StatefulSet.gitserver =
+  , StatefulSet.gitserver
+    =
     { apiVersion = "apps/v1"
     , kind = "StatefulSet"
     , metadata =
-      { annotations.description =
-          "Stores clones of repositories to perform Git operations."
+      { annotations.description
+        = "Stores clones of repositories to perform Git operations."
       , labels =
         { `app.kubernetes.io/component` = "gitserver"
         , deploy = "sourcegraph"
@@ -672,7 +692,8 @@
       , selector.matchLabels.app = "gitserver"
       , serviceName = "gitserver"
       , template =
-        { metadata.labels =
+        { metadata.labels
+          =
           { app = "gitserver"
           , deploy = "sourcegraph"
           , group = "backend"
@@ -718,7 +739,8 @@
                 ]
               , env = Some
                 [ { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 ]
@@ -777,9 +799,11 @@
     }
   }
 , Grafana =
-  { ConfigMap.grafana =
+  { ConfigMap.grafana
+    =
     { apiVersion = "v1"
-    , data.`datasources.yml` =
+    , data.`datasources.yml`
+      =
         ''
         apiVersion: 1
 
@@ -805,7 +829,8 @@
       , name = "grafana"
       }
     }
-  , Service.grafana =
+  , Service.grafana
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -823,7 +848,8 @@
       , type = "ClusterIP"
       }
     }
-  , ServiceAccount.grafana =
+  , ServiceAccount.grafana
+    =
     { apiVersion = "v1"
     , imagePullSecrets = [ { name = "docker-registry" } ]
     , kind = "ServiceAccount"
@@ -837,7 +863,8 @@
       , name = "grafana"
       }
     }
-  , StatefulSet.grafana =
+  , StatefulSet.grafana
+    =
     { apiVersion = "apps/v1"
     , kind = "StatefulSet"
     , metadata =
@@ -952,7 +979,8 @@
         }
       }
     }
-  , StatefulSet.indexed-search =
+  , StatefulSet.indexed-search
+    =
     { apiVersion = "apps/v1"
     , kind = "StatefulSet"
     , metadata =
@@ -1032,7 +1060,8 @@
     }
   }
 , Jaeger =
-  { Deployment.jaeger =
+  { Deployment.jaeger
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -1047,7 +1076,8 @@
       }
     , spec =
       { replicas = 1
-      , selector.matchLabels =
+      , selector.matchLabels
+        =
         { app = "jaeger"
         , `app.kubernetes.io/component` = "all-in-one"
         , `app.kubernetes.io/name` = "jaeger"
@@ -1163,9 +1193,11 @@
     }
   }
 , Pgsql =
-  { ConfigMap.pgsql-conf =
+  { ConfigMap.pgsql-conf
+    =
     { apiVersion = "v1"
-    , data.`postgresql.conf` =
+    , data.`postgresql.conf`
+      =
         ''
         # -----------------------------
         # PostgreSQL configuration file
@@ -1869,7 +1901,8 @@
       , name = "pgsql-conf"
       }
     }
-  , Deployment.pgsql =
+  , Deployment.pgsql
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -1888,7 +1921,8 @@
       , selector.matchLabels.app = "pgsql"
       , strategy.type = "Recreate"
       , template =
-        { metadata.labels =
+        { metadata.labels
+          =
           { app = "pgsql", deploy = "sourcegraph", group = "backend" }
         , spec =
           { containers =
@@ -1961,7 +1995,8 @@
         }
       }
     }
-  , PersistentVolumeClaim.pgsql =
+  , PersistentVolumeClaim.pgsql
+    =
     { apiVersion = "v1"
     , kind = "PersistentVolumeClaim"
     , metadata =
@@ -1978,7 +2013,8 @@
       , storageClassName = "sourcegraph"
       }
     }
-  , Service.pgsql =
+  , Service.pgsql
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -2007,8 +2043,8 @@
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Stores and manages precise code intelligence bundles."
+        { annotations.description
+          = "Stores and manages precise code intelligence bundles."
         , labels =
           { `app.kubernetes.io/component` = "precise-code-intel"
           , deploy = "sourcegraph"
@@ -2023,7 +2059,8 @@
         , selector.matchLabels.app = "precise-code-intel-bundle-manager"
         , strategy.type = "Recreate"
         , template =
-          { metadata.labels =
+          { metadata.labels
+            =
             { app = "precise-code-intel-bundle-manager"
             , deploy = "sourcegraph"
             }
@@ -2081,8 +2118,8 @@
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Handles conversion of uploaded precise code intelligence bundles."
+        { annotations.description
+          = "Handles conversion of uploaded precise code intelligence bundles."
         , labels =
           { `app.kubernetes.io/component` = "precise-code-intel"
           , deploy = "sourcegraph"
@@ -2100,7 +2137,8 @@
           , type = "RollingUpdate"
           }
         , template =
-          { metadata.labels =
+          { metadata.labels
+            =
             { app = "precise-code-intel-worker", deploy = "sourcegraph" }
           , spec =
             { containers =
@@ -2151,7 +2189,8 @@
         }
       }
     }
-  , PersistentVolumeClaim.bundle-manager =
+  , PersistentVolumeClaim.bundle-manager
+    =
     { apiVersion = "v1"
     , kind = "PersistentVolumeClaim"
     , metadata =
@@ -2222,7 +2261,8 @@
     }
   }
 , Prometheus =
-  { ClusterRole.prometheus =
+  { ClusterRole.prometheus
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "ClusterRole"
     , metadata =
@@ -2260,7 +2300,8 @@
         }
       ]
     }
-  , ClusterRoleBinding.prometheus =
+  , ClusterRoleBinding.prometheus
+    =
     { apiVersion = "rbac.authorization.k8s.io/v1"
     , kind = "ClusterRoleBinding"
     , metadata =
@@ -2277,7 +2318,8 @@
       [ { kind = "ServiceAccount", name = "prometheus", namespace = "default" }
       ]
     }
-  , ConfigMap.prometheus =
+  , ConfigMap.prometheus
+    =
     { apiVersion = "v1"
     , data =
       { `extra_rules.yml` = ""
@@ -2543,12 +2585,13 @@
       , name = "prometheus"
       }
     }
-  , Deployment.prometheus =
+  , Deployment.prometheus
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
-      { annotations.description =
-          "Collects metrics and aggregates them into graphs."
+      { annotations.description
+        = "Collects metrics and aggregates them into graphs."
       , labels =
         { `app.kubernetes.io/component` = "prometheus"
         , deploy = "sourcegraph"
@@ -2607,7 +2650,8 @@
         }
       }
     }
-  , PersistentVolumeClaim.prometheus =
+  , PersistentVolumeClaim.prometheus
+    =
     { apiVersion = "v1"
     , kind = "PersistentVolumeClaim"
     , metadata =
@@ -2624,7 +2668,8 @@
       , storageClassName = "sourcegraph"
       }
     }
-  , Service.prometheus =
+  , Service.prometheus
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -2642,7 +2687,8 @@
       , type = "ClusterIP"
       }
     }
-  , ServiceAccount.prometheus =
+  , ServiceAccount.prometheus
+    =
     { apiVersion = "v1"
     , imagePullSecrets = [ { name = "docker-registry" } ]
     , kind = "ServiceAccount"
@@ -2658,12 +2704,13 @@
     }
   }
 , Query-Runner =
-  { Deployment.query-runner =
+  { Deployment.query-runner
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
-      { annotations.description =
-          "Saved search query runner / notification service."
+      { annotations.description
+        = "Saved search query runner / notification service."
       , labels =
         { `app.kubernetes.io/component` = "query-runner"
         , deploy = "sourcegraph"
@@ -2715,7 +2762,8 @@
                 ]
               , env = Some
                 [ { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 ]
@@ -2752,7 +2800,8 @@
         }
       }
     }
-  , Service.query-runner =
+  , Service.query-runner
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -2853,8 +2902,8 @@
       { apiVersion = "apps/v1"
       , kind = "Deployment"
       , metadata =
-        { annotations.description =
-            "Redis for storing semi-persistent data like user sessions."
+        { annotations.description
+          = "Redis for storing semi-persistent data like user sessions."
         , labels =
           { `app.kubernetes.io/component` = "redis"
           , deploy = "sourcegraph"
@@ -3007,11 +3056,13 @@
     }
   }
 , Repo-Updater =
-  { Deployment.repo-updater =
+  { Deployment.repo-updater
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
-      { annotations.description =
+      { annotations.description
+        =
           "Handles repository metadata (not Git data) lookups and updates from external code hosts and other similar services."
       , labels =
         { `app.kubernetes.io/component` = "repo-updater"
@@ -3075,7 +3126,8 @@
                 ]
               , env = Some
                 [ { name = "POD_NAME"
-                  , valueFrom.fieldRef =
+                  , valueFrom.fieldRef
+                    =
                     { apiVersion = "v1", fieldPath = "metadata.name" }
                   }
                 ]
@@ -3119,7 +3171,8 @@
         }
       }
     }
-  , Service.repo-updater =
+  , Service.repo-updater
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -3143,7 +3196,8 @@
     }
   }
 , Searcher =
-  { Deployment.searcher =
+  { Deployment.searcher
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -3277,7 +3331,8 @@
         }
       }
     }
-  , Service.searcher =
+  , Service.searcher
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -3304,7 +3359,8 @@
     }
   }
 , Symbols =
-  { Deployment.symbols =
+  { Deployment.symbols
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -3448,7 +3504,8 @@
         }
       }
     }
-  , Service.symbols =
+  , Service.symbols
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
@@ -3475,7 +3532,8 @@
     }
   }
 , Syntect-Server =
-  { Deployment.syntect-server =
+  { Deployment.syntect-server
+    =
     { apiVersion = "apps/v1"
     , kind = "Deployment"
     , metadata =
@@ -3523,7 +3581,8 @@
         }
       }
     }
-  , Service.syntect-server =
+  , Service.syntect-server
+    =
     { apiVersion = "v1"
     , kind = "Service"
     , metadata =
