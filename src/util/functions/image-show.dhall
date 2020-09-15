@@ -20,32 +20,33 @@ let Image/show =
 
         in  "${registry}${i.name}:${i.tag}${digest}"
 
-let testImage = Image::{ name = "sourcegraph/frontend", tag = "insiders" }
+let exampleImage = Image::{ name = "sourcegraph/frontend", tag = "insiders" }
 
-let test =
+let example0 =
         assert
-      : Image/show testImage ≡ "index.docker.io/sourcegraph/frontend:insiders"
+      :   Image/show exampleImage
+        ≡ "index.docker.io/sourcegraph/frontend:insiders"
 
-let test1 =
+let example1 =
         assert
-      :   Image/show (testImage with registry = None Text)
+      :   Image/show (exampleImage with registry = None Text)
         ≡ "sourcegraph/frontend:insiders"
 
-let test2 =
+let example2 =
         assert
       :   Image/show
-            (testImage with registry = None Text with digest = Some "123tsf")
+            (exampleImage with registry = None Text with digest = Some "123tsf")
         ≡ "sourcegraph/frontend:insiders@sha256:123tsf"
 
-let test3 =
+let example3 =
         assert
-      :   Image/show (testImage with digest = Some "123tsf")
+      :   Image/show (exampleImage with digest = Some "123tsf")
         ≡ "index.docker.io/sourcegraph/frontend:insiders@sha256:123tsf"
 
-let test4 =
+let example4 =
         assert
       :   Image/show
-            ( testImage
+            ( exampleImage
               with registry = Some "index.sourcegraph.net"
               with digest = Some "123tsf"
             )

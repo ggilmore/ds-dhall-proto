@@ -1,4 +1,4 @@
-let configuration = ../../configuration/package.dhall
+let util = ../../util/package.dhall
 
 let Kubernetes/EnvVar =
       https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.EnvVar.dhall
@@ -9,9 +9,9 @@ let Kubernetes/EnvVarSource =
 let Kubernetes/ObjectFieldSelector =
       https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.ObjectFieldSelector.dhall
 
-let Simple/Frontend = ../../simple/frontend/schemas.dhall
+let Simple/Frontend = ../../simple/frontend/package.dhall
 
-let Image = configuration.Image
+let Image = util.Image
 
 let containerConfiguration =
       { Type =

@@ -9,7 +9,7 @@ let List/unpackOptionals =
 
 let List/map = https://prelude.dhall-lang.org/v18.0.0/List/map
 
-let Simple/Frontend = ../../simple/frontend/schemas.dhall
+let Simple/Frontend = ../../simple/frontend/package.dhall
 
 let simpleInternal = Simple/Frontend.Containers.frontendInternal
 

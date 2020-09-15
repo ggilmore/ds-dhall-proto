@@ -6,7 +6,7 @@ let environment/toList = (./environment.dhall).environment/toList
 
 let DockerCompose/HealthCheck = ../schemas/healthcheck.dhall
 
-let Simple/Frontend = ../../simple/frontend/schemas.dhall
+let Simple/Frontend = ../../simple/frontend/package.dhall
 
 let component =
       { Type =

@@ -1,8 +1,10 @@
-let configuration/Image = ../../configuration/image/package.dhall
+let util = ../../util/package.dhall
 
-let Image = configuration/Image.Image
+let Image = util.Image
 
-let frontendImage =
+let Container = util.Container
+
+let image =
       Image::{
       , name = "sourcegraph/frontend"
       , registry = Some "index.docker.io"
@@ -11,16 +13,52 @@ let frontendImage =
       , tag = "3.19.2"
       }
 
-let cacheFolder = "/mnt/cache/"
+let cacheDir = "/mnt/cache"
 
-in  { name = "sourcegraph-frontend"
-    , image = frontendImage
-    , ports = { http = 3080, http-internal = 3090 }
-    , environment =
-      { CACHE_DIR = { name = "CACHE_DIR", value = cacheFolder }
+let volumes = { CACHE_DIR = cacheDir }
+
+let frontendEnvironment =
+      { CACHE_DIR = { name = "CACHE_DIR", value = cacheDir }
       , SRC_GIT_SERVERS =
         { name = "SRC_GIT_SERVERS", value = "gitserver-0.gitserver:3178" }
       }
-    , volumes.CACHE_DIR = cacheFolder
-    , healthcheck = { command = "./script.sh", interval = "3s" }
-    }
+
+let frontendHostname = "sourcegraph-frontend"
+
+let httpPort = 3080
+
+let healthCheck =
+      util.HealthCheck::{
+      , endpoint = "/healthz"
+      , port = httpPort
+      , scheme = util.HealthCheck/Scheme.HTTP
+      , initialDelaySeconds = Some 300
+      , retries = Some 3
+      , timeoutSeconds = Some 10
+      , intervalSeconds = Some 5
+      }
+
+let frontendContainer =
+        Container::{ image }
+      ∧ { name = frontendHostname
+        , hostname = frontendHostname
+        , environment = frontendEnvironment
+        , volumes
+        , ports.http = 3080
+        }
+
+let internalHostname = "sourcegraph-frontend-internal"
+
+let internalContainer =
+        frontendContainer
+      ⫽ { name = internalHostname
+        , hostname = internalHostname
+        , ports.http-internal = 3090
+        }
+
+let Containers =
+      { frontend = frontendContainer ∧ { HealthCheck = healthCheck }
+      , frontendInternal = internalContainer
+      }
+
+in  { Containers }

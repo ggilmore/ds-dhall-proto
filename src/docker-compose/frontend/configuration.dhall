@@ -2,7 +2,7 @@ let util = ../../util/package.dhall
 
 let DockerCompose/HealthCheck = ../schemas/healthcheck.dhall
 
-let Simple/Frontend = (../../simple/frontend/schemas.dhall).Containers.frontend
+let Simple/Frontend = (../../simple/frontend/package.dhall).Containers.frontend
 
 let environment = (./environment.dhall).environment
 

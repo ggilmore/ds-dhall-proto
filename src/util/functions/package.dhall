@@ -1,1 +1,1 @@
-./healthcheck-show.dhall ⫽ ./image-show.dhall
+./healthcheck-show.dhall ⫽ ./image-show.dhall ⫽ ./image-manipulate.dhall
