@@ -2,8 +2,6 @@ let util = ../../util/package.dhall
 
 let Image = util.Image
 
-let EnvVar = util.EnvVar
-
 let Container = util.Container
 
 let image =

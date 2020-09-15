@@ -1,7 +1,5 @@
 let util = ../../util/package.dhall
 
-let DockerCompose/HealthCheck = ../schemas/healthcheck.dhall
-
 let EnvVar = util.EnvVar
 
 let Map/values = https://prelude.dhall-lang.org/v18.0.0/Map/values

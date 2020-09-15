@@ -1,7 +1,5 @@
 let configuration = ../../configuration/package.dhall
 
-let Image = configuration.Image
-
 let Image/show = configuration.Image/show
 
 let Frontend/configuration = ./configuration.dhall
