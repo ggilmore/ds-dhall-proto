@@ -32,7 +32,8 @@ let httpPort = 3080
 let healthCheck =
       util.HealthCheck::{
       , endpoint = "/healthz"
-      , port = Some httpPort
+      , port = httpPort
+      , scheme = util.HealthCheck/Scheme.HTTP
       , initialDelaySeconds = Some 300
       , retries = Some 3
       , timeoutSeconds = Some 10

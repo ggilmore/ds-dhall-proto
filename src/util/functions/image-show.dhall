@@ -2,7 +2,7 @@ let Optional/default = https://prelude.dhall-lang.org/v18.0.0/Optional/default
 
 let Optional/map = https://prelude.dhall-lang.org/v18.0.0/Optional/map
 
-let Image = (./schemas.dhall).Image
+let Image = (../schemas.dhall).Image
 
 let Image/show =
       λ(i : Image.Type) →

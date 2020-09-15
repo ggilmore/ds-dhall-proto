@@ -2,6 +2,6 @@ let types = ./types.dhall
 
 let schemas = ./schemas.dhall
 
-let utils = ./utils.dhall
+let functions = ./functions/package.dhall
 
-in  types ⫽ schemas ⫽ utils
+in  types ⫽ schemas ⫽ functions

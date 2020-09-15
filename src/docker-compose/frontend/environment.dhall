@@ -1,4 +1,6 @@
-let util = ../util/package.dhall
+let util = ../../util/package.dhall
+
+let DockerCompose/HealthCheck = ../schemas/healthcheck.dhall
 
 let EnvVar = util.EnvVar
 
@@ -9,17 +11,13 @@ let List/unpackOptionals =
 
 let List/map = https://prelude.dhall-lang.org/v18.0.0/List/map
 
-let Simple/Frontend = ../simple/frontend/schemas.dhall
+let Simple/Frontend = ../../simple/frontend/schemas.dhall
 
 let simpleInternal = Simple/Frontend.Containers.frontendInternal
 
 let SRC_FRONTEND_INTERNAL =
       "${simpleInternal.hostname}:${Natural/show
                                       simpleInternal.ports.http-internal}"
-
-let util = ../util/package.dhall
-
-let EnvVar = util.EnvVar
 
 let environment =
       { Type =
@@ -121,57 +119,4 @@ let environment/toList
 
         in  List/unpackOptionals Text optionalTextList
 
-let component =
-      { Type =
-          { container_name : Text
-          , cpus : Natural
-          , environment : List Text
-          , healthcheck :
-              { interval : Text
-              , retries : Natural
-              , start_period : Text
-              , test : Text
-              , timeout : Text
-              }
-          , image : Text
-          , mem_limit : Text
-          , networks : List Text
-          , restart : Text
-          , volumes : List Text
-          }
-      , default = { restart = "always", networks = [ "sourcegraph" ] }
-      }
-
-let configuration =
-      { Type =
-          { image : util.Image.Type
-          , replicas : Natural
-          , environment : environment.Type
-          }
-      , defaults.default = environment.default
-      }
-
-let generate
-    : ∀(c : configuration.Type) → component.Type
-    = λ(c : configuration.Type) →
-        let simple/healthCheck = Simple/Frontend.Containers.frontend.HealthCheck
-
-        in  component::{
-            , container_name = "sourcegraph-frontend-0"
-            , cpus = 4
-            , mem_limit = "8g"
-            , environment = environment/toList c.environment
-            , healthcheck =
-              { interval = simple/healthCheck.intervalSeconds
-              , retries = 3
-              , start_period = "300s"
-              , test =
-                  "wget -q 'http://127.0.0.1:3080/healthz' -O /dev/null || exit 1"
-              , timeout = "10s"
-              }
-            , image = util.Image/show c.image
-            , volumes =
-              [ "sourcegraph-frontend-0:${simpleInternal.volumes.CACHE_DIR}" ]
-            }
-
-in  generate
+in  { environment, environment/toList }
