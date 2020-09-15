@@ -1,10 +1,10 @@
-let configuration = ../../configuration/package.dhall
+let util = ../../util/package.dhall
 
-let Image = configuration.Image
+let Image = util.Image
 
-let EnvVar = configuration.EnvVar
+let EnvVar = util.EnvVar
 
-let Container = configuration.Container
+let Container = util.Container
 
 let image =
       Image::{
@@ -27,6 +27,18 @@ let frontendEnvironment =
 
 let frontendHostname = "sourcegraph-frontend"
 
+let httpPort = 3080
+
+let healthCheck =
+      util.HealthCheck::{
+      , endpoint = "/healthz"
+      , port = Some httpPort
+      , initialDelaySeconds = Some 300
+      , retries = Some 3
+      , timeoutSeconds = Some 10
+      , intervalSeconds = Some 5
+      }
+
 let frontendContainer =
         Container::{ image }
       ∧ { name = frontendHostname
@@ -39,12 +51,15 @@ let frontendContainer =
 let internalHostname = "sourcegraph-frontend-internal"
 
 let internalContainer =
-      frontendContainer
-      with name = internalHostname
-      with hostname = internalHostname
-      with ports = { http-internal = 3090 }
+        frontendContainer
+      ⫽ { name = internalHostname
+        , hostname = internalHostname
+        , ports.http-internal = 3090
+        }
 
 let Containers =
-      { frontend = frontendContainer, frontendInternal = internalContainer }
+      { frontend = frontendContainer ∧ { HealthCheck = healthCheck }
+      , frontendInternal = internalContainer
+      }
 
 in  { Containers }
