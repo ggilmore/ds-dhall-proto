@@ -12,6 +12,8 @@ let dhallLint = ./jobs/dhall-lint.dhall
 
 let dhallCheck = ./jobs/dhall-check.dhall
 
+let dhallFreeze = ./jobs/dhall-freeze.dhall
+
 let prettier = ./jobs/prettier.dhall
 
 in  GitHubActions.Workflow::{
@@ -23,6 +25,7 @@ in  GitHubActions.Workflow::{
         , dhallFormat
         , dhallLint
         , dhallCheck
+        , dhallFreeze
         , checkPipeline
         , prettier
         }

@@ -1,10 +1,10 @@
-let sharedConfiguration = ./shared.dhall
+let ContainerConfiguration = (./shared.dhall).ContainerConfiguration
 
 let Simple/Frontend/Containers =
       (../../../../simple/frontend/package.dhall).Containers
 
 let FrontendContainer =
-      sharedConfiguration.ContainerConfiguration
+      ContainerConfiguration
       with default.image = Simple/Frontend/Containers.frontend.image
 
 let InternalContainer =

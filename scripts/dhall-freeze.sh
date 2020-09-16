@@ -19,17 +19,21 @@ function my_chronic() {
 
 export -f my_chronic
 
-function check() {
+function freeze() {
   local file="$1"
 
-  local CHECK_ARGS=(
+  local FREEZE_ARGS=(
     "dhall"
     "freeze"
     "--inplace"
     "${file}"
   )
 
-  result=$(my_chronic "${CHECK_ARGS[@]}" 2>&1)
+  if [ "${CHECK:-"false"}" == "true" ]; then
+    FREEZE_ARGS+=("--check")
+  fi
+
+  result=$(my_chronic "${FREEZE_ARGS[@]}" 2>&1)
   rc=$?
 
   if [ -n "$result" ]; then
@@ -40,6 +44,6 @@ function check() {
 
   return "$rc"
 }
-export -f check
+export -f freeze
 
-./scripts/parallel_run.sh check {} ::: "${DHALL_FILES[@]}"
+./scripts/parallel_run.sh freeze {} ::: "${DHALL_FILES[@]}"
