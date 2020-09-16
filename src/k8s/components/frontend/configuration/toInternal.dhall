@@ -31,25 +31,23 @@ let toInternal
         let frontendImage =
               Image/manipulate manipulate/options cgContainers.Frontend.image
 
-        let internalImage =
-              Image/manipulate
-                manipulate/options
-                cgContainers.FrontendInteral.image
+        let jaegerImgae =
+              Image/manipulate manipulate/options cgContainers.Jaeger.image
 
         let FrontendConfig =
               cg.Frontend.Deployment.Containers.Frontend
               with image = frontendImage
               with securityContext = securityContext
 
-        let InternalConfig =
-              cg.Frontend.Deployment.Containers.FrontendInteral
-              with image = internalImage
+        let JaegerConfig =
+              cg.Frontend.Deployment.Containers.Jaeger
+              with image = jaegerImgae
               with securityContext = securityContext
 
         in  { namespace = globalOpts.namespace
             , Deployment.Containers
               =
-              { Frontend = FrontendConfig, FrontendInternal = InternalConfig }
+              { Frontend = FrontendConfig, Jaeger = JaegerConfig }
             }
 
 in  toInternal

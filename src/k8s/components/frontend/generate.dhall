@@ -13,7 +13,7 @@ let Simple/Frontend = ../../../simple/frontend/package.dhall
 
 let util = ../../../util/package.dhall
 
-let jaegerContainer = ./jaeger.dhall
+let Jaeger/generate = ./jaeger.dhall
 
 let deploySourcegraphLabel = { deploy = "sourcegraph" }
 
@@ -124,7 +124,7 @@ let Deployment/generate
                         , securityContext
                         , volumeMounts = Some [ cacheVolume ]
                         }
-                      , jaegerContainer
+                      , Jaeger/generate c
                       ]
                     , securityContext = Some Kubernetes.PodSecurityContext::{
                       , runAsUser = Some 0
