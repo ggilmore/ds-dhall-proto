@@ -5,21 +5,23 @@ let Configuration/global = ../../../configuration/global.dhall
 
 let Configuration/internal = ./internal.dhall
 
-let util = ../../../../util/package.dhall
+let Image/manipulate = (../../../../util/package.dhall).Image/manipulate
+
+let nonRootSecurityContext =
+      Kubernetes/SecurityContext::{
+      , runAsUser = Some 100
+      , runAsGroup = Some 101
+      , allowPrivilegeEscalation = Some False
+      }
 
 let toInternal
     : ∀(cg : Configuration/global.Type) → Configuration/internal.Type
     = λ(cg : Configuration/global.Type) →
         let globalOpts = cg.Global
 
-        let security =
+        let securityContext =
               if    globalOpts.nonRoot
-              then  Some
-                      Kubernetes/SecurityContext::{
-                      , runAsUser = Some 100
-                      , runAsGroup = Some 101
-                      , allowPrivilegeEscalation = Some False
-                      }
+              then  Some nonRootSecurityContext
               else  None Kubernetes/SecurityContext.Type
 
         let cgContainers = cg.Frontend.Deployment.Containers
@@ -27,30 +29,27 @@ let toInternal
         let manipulate/options = globalOpts.ImageManipulations
 
         let frontendImage =
-              util.Image/manipulate
-                manipulate/options
-                cgContainers.Frontend.image
+              Image/manipulate manipulate/options cgContainers.Frontend.image
 
         let internalImage =
-              util.Image/manipulate
+              Image/manipulate
                 manipulate/options
                 cgContainers.FrontendInteral.image
 
         let FrontendConfig =
               cg.Frontend.Deployment.Containers.Frontend
               with image = frontendImage
-              with securityContext = security
+              with securityContext = securityContext
 
         let InternalConfig =
               cg.Frontend.Deployment.Containers.FrontendInteral
               with image = internalImage
-              with securityContext = security
+              with securityContext = securityContext
 
-        in    { namespace = globalOpts.namespace
-              , Deployment.Containers
-                =
-                { Frontend = FrontendConfig, FrontendInternal = InternalConfig }
-              }
-            : Configuration/internal.Type
+        in  { namespace = globalOpts.namespace
+            , Deployment.Containers
+              =
+              { Frontend = FrontendConfig, FrontendInternal = InternalConfig }
+            }
 
 in  toInternal

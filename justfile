@@ -1,4 +1,4 @@
-all: check build format lint freeze
+all: check freeze format lint build
 
 build: render-ci-pipeline
 

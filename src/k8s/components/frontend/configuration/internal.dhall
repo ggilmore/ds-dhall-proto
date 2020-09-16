@@ -1,7 +1,11 @@
 let Kubernetes/SecurityContext =
       https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.SecurityContext.dhall sha256:ebd2dfc83e8a5bec031f3d71e9c5bf2ac583ab56572f8d7f3a8f9c9f113e3a0a
 
-let Simple/Frontend = ../../../../simple/frontend/package.dhall
+let Simple = (../../../../simple/frontend/package.dhall).Containers
+
+let simpleFrontend = Simple.frontend
+
+let simpleInternal = Simple.frontendInternal
 
 let sharedConfiguration = ./shared.dhall
 
@@ -18,12 +22,12 @@ let FrontendContainer =
       { Type = ContainerConfiguration.Type
       , default =
           ContainerConfiguration.default
-        with image = Simple/Frontend.Containers.frontend.image
+        with image = simpleFrontend.image
       }
 
 let InternalContainer =
       FrontendContainer
-      with default.image = Simple/Frontend.Containers.frontendInternal.image
+      with default.image = simpleInternal.image
 
 let Containers =
       { Type =
