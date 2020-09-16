@@ -10,6 +10,8 @@ let Jaeger/generate
     = λ(c : Configuration/Internal.Type) →
         let image = util.Image/show c.Deployment.Containers.Jaeger.image
 
+        let securityContext = c.Deployment.Containers.Jaeger.securityContext
+
         in  Kubernetes.Container::{
             , args = Some
               [ "--reporter.grpc.host-port=jaeger-collector:14250"
@@ -46,6 +48,7 @@ let Jaeger/generate
                 , protocol = Some "UDP"
                 }
               ]
+            , securityContext
             , resources = Some Kubernetes.ResourceRequirements::{
               , limits = Some
                 [ { mapKey = "cpu", mapValue = "1" }
