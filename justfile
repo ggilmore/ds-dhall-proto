@@ -1,4 +1,4 @@
-all: check build format lint
+all: check build format lint freeze
 
 build: render-ci-pipeline
 
@@ -8,6 +8,8 @@ render-ci-pipeline:
 format: format-dhall prettier format-shfmt
 
 lint: lint-dhall shellcheck
+
+freeze: freeze-dhall
 
 check: check-dhall
 
@@ -19,6 +21,9 @@ check-dhall:
 
 format-dhall:
     ./scripts/dhall-format.sh
+
+freeze-dhall: format-dhall  lint-dhall
+    ./scripts/dhall-freeze.sh
 
 lint-dhall:
     ./scripts/dhall-lint.sh
