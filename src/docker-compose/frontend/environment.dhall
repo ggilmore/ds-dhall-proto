@@ -2,12 +2,14 @@ let util = ../../util/package.dhall
 
 let EnvVar = util.EnvVar
 
-let Map/values = https://prelude.dhall-lang.org/v18.0.0/Map/values
+let Map/values =
+      https://prelude.dhall-lang.org/v18.0.0/Map/values sha256:ae02cfb06a9307cbecc06130e84fd0c7b96b7f1f11648961e1b030ec00940be8
 
 let List/unpackOptionals =
-      https://prelude.dhall-lang.org/v18.0.0/List/unpackOptionals
+      https://prelude.dhall-lang.org/v18.0.0/List/unpackOptionals sha256:0cbaa920f429cf7fc3907f8a9143203fe948883913560e6e1043223e6b3d05e4
 
-let List/map = https://prelude.dhall-lang.org/v18.0.0/List/map
+let List/map =
+      https://prelude.dhall-lang.org/v18.0.0/List/map sha256:dd845ffb4568d40327f2a817eb42d1c6138b929ca758d50bc33112ef3c885680
 
 let Simple/Frontend = ../../simple/frontend/package.dhall
 

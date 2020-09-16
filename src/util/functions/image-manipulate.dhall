@@ -1,4 +1,5 @@
-let Optional/default = https://prelude.dhall-lang.org/v18.0.0/Optional/default
+let Optional/default =
+      https://prelude.dhall-lang.org/v18.0.0/Optional/default sha256:5bd665b0d6605c374b3c4a7e2e2bd3b9c1e39323d41441149ed5e30d86e889ad
 
 let Image = (../schemas.dhall).Image
 
@@ -81,5 +82,7 @@ let example4 =
             with tag = "beginning-insiders"
             with registry = Some "this.other.registry"
           )
+
+let example5 = assert : manipulate options::{=} baseImage ≡ baseImage
 
 in  { Image/manipulate = manipulate, Image/manipulate/options = options }

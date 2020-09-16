@@ -1,31 +1,15 @@
-let util = ../../util/package.dhall
-
 let Kubernetes/EnvVar =
-      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.EnvVar.dhall
+      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.EnvVar.dhall sha256:94ea00566409bc470cd81ca29903066714557826c723dad8c25a282897c7acb3
 
 let Kubernetes/EnvVarSource =
-      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.EnvVarSource.dhall
+      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.EnvVarSource.dhall sha256:f049413a4f2c8db088e841b418fd403ff314e691d3d6fadc34fa65252de18e9b
 
 let Kubernetes/ObjectFieldSelector =
-      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.ObjectFieldSelector.dhall
+      https://raw.githubusercontent.com/dhall-lang/dhall-kubernetes/master/1.18/schemas/io.k8s.api.core.v1.ObjectFieldSelector.dhall sha256:e9a6ea292ae1419188577786c4c5d84c4adb7977990181b6df73885a87b586ff
 
-let Simple/Frontend = ../../simple/frontend/package.dhall
+let Simple/Frontend = ../../../../../simple/frontend/package.dhall
 
-let Image = util.Image
-
-let containerConfiguration =
-      { Type =
-          { image : Image.Type
-          , runAsUser : Optional Natural
-          , runAsGroup : Optional Natural
-          , allowPrivilegeEscalation : Optional Bool
-          }
-      , default =
-        { runAsUser = None Natural
-        , runAsGroup = None Natural
-        , allowPrivledgeEscalation = None Bool
-        }
-      }
+let Simple/Frontend/frontend = Simple/Frontend.Containers.frontend
 
 let postgresEnv =
       { Type =
@@ -50,7 +34,7 @@ let postgresEnv =
         }
       }
 
-let frontendEnvironment =
+let environment =
       { Type =
             { SRC_GIT_SERVERS : Kubernetes/EnvVar.Type
             , POD_NAME : Kubernetes/EnvVar.Type
@@ -76,7 +60,8 @@ let frontendEnvironment =
               }
             , CACHE_DIR = Kubernetes/EnvVar::{
               , name = "CACHE_DIR"
-              , value = Some "/mnt/cache/\$(POD_NAME)"
+              , value = Some
+                  "${Simple/Frontend/frontend.volumes.CACHE_DIR}/\$(POD_NAME)"
               }
             , GRAFANA_SERVER_URL = Kubernetes/EnvVar::{
               , name = "GRAFANA_SERVER_URL"
@@ -98,38 +83,4 @@ let frontendEnvironment =
           ∧ postgresEnv.default
       }
 
-let frontendContainer =
-      { Type =
-            containerConfiguration.Type
-          ⩓ { Environment : frontendEnvironment.Type }
-      , default =
-            containerConfiguration.default
-          ∧ { Environment = frontendEnvironment.default
-            , image = Simple/Frontend.Containers.frontend.image
-            }
-      }
-
-let internalContainer =
-      frontendContainer
-      with default.image = Simple/Frontend.Containers.frontendInternal.image
-
-let Containers =
-      { Type =
-          { Frontend : frontendContainer.Type
-          , FrontendInteral : internalContainer.Type
-          }
-      , default =
-        { Frontend = frontendContainer.default
-        , FrontendInteral = internalContainer.default
-        }
-      }
-
-let Deployment =
-      { Type = { Containers : Containers.Type }, default = Containers.default }
-
-let configuration =
-      { Type = { namespace : Optional Text, Deployment : Deployment.Type }
-      , default = { namespace = None Text, Deployment = Deployment.default }
-      }
-
-in  configuration
+in  environment

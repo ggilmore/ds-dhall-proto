@@ -1,6 +1,8 @@
-let Optional/default = https://prelude.dhall-lang.org/v18.0.0/Optional/default
+let Optional/default =
+      https://prelude.dhall-lang.org/v18.0.0/Optional/default sha256:5bd665b0d6605c374b3c4a7e2e2bd3b9c1e39323d41441149ed5e30d86e889ad
 
-let Optional/map = https://prelude.dhall-lang.org/v18.0.0/Optional/map
+let Optional/map =
+      https://prelude.dhall-lang.org/v18.0.0/Optional/map sha256:501534192d988218d43261c299cc1d1e0b13d25df388937add784778ab0054fa
 
 let Image = (../schemas.dhall).Image
 
