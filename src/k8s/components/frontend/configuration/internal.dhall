@@ -5,9 +5,9 @@ let Simple = (../../../../simple/frontend/package.dhall).Containers
 
 let simpleFrontend = Simple.frontend
 
-let simpleInternal = Simple.frontendInternal
-
 let sharedConfiguration = ./shared.dhall
+
+let environment = ./environment/environment.dhall
 
 let ContainerConfiguration =
       { Type =
@@ -19,24 +19,22 @@ let ContainerConfiguration =
       }
 
 let FrontendContainer =
-      { Type = ContainerConfiguration.Type
+      { Type = ContainerConfiguration.Type ⩓ { Environment : environment.Type }
       , default =
-          ContainerConfiguration.default
-        with image = simpleFrontend.image
+            ContainerConfiguration.default
+          ⫽ { Environment = environment.default, image = simpleFrontend.image }
       }
 
-let InternalContainer =
-      FrontendContainer
-      with default.image = simpleInternal.image
+let JaegerContainer =
+      ContainerConfiguration
+      with default.image = sharedConfiguration.JaegerImage
 
 let Containers =
       { Type =
-          { Frontend : FrontendContainer.Type
-          , FrontendInternal : InternalContainer.Type
-          }
+          { Frontend : FrontendContainer.Type, Jaeger : JaegerContainer.Type }
       , default =
         { Frontend = FrontendContainer.default
-        , FrontendInternal = InternalContainer.default
+        , Jaeger = JaegerContainer.default
         }
       }
 
