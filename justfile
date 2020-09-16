@@ -22,7 +22,7 @@ check-dhall:
 format-dhall:
     ./scripts/dhall-format.sh
 
-freeze-dhall: format-dhall  lint-dhall
+freeze-dhall:
     ./scripts/dhall-freeze.sh
 
 lint-dhall:
