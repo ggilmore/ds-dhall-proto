@@ -29,6 +29,10 @@ function check() {
     "${file}"
   )
 
+  if [ "${CHECK:-"false"}" == "true" ]; then
+    FORMAT_ARGS+=("--check")
+  fi
+
   result=$(my_chronic "${CHECK_ARGS[@]}" 2>&1)
   rc=$?
 

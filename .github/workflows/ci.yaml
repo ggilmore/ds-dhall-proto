@@ -41,6 +41,21 @@ jobs:
                   CHECK: "true"
               name: Check that dhall files are formatted
               run: just format-dhall
+    dhallFreeze:
+        name: dhall-freeze
+        runs-on: ubuntu-latest
+        steps:
+            - uses: "actions/checkout@v2"
+            - name: Install asdf
+              uses: "asdf-vm/actions/setup@v1.0.0"
+            - name: Install asdf plugins
+              run: "./ci/asdf-add-plugins.sh"
+            - name: Install asdf tool versions and packages
+              run: "./ci/asdf-install.sh"
+            - env:
+                  CHECK: "true"
+              name: Check that dhall files are frozen
+              run: just freeze-dhall
     dhallLint:
         name: dhall-lint
         runs-on: ubuntu-latest
