@@ -16,6 +16,12 @@ check: check-dhall
 prettier:
     yarn run prettier
 
+build-k8s:
+    dhall-to-yaml --explain --file=src/k8s/pipeline.dhall
+
+build-docker-compose:
+    dhall-to-yaml --explain --file=src/docker-compose/frontend-pipeline.dhall
+
 check-dhall:
     ./scripts/dhall-check.sh
 
